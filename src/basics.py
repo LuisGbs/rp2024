@@ -20,7 +20,7 @@ bullet_client.resetSimulation()
 robot = BulletRobot(bullet_client=bullet_client, urdf_path=URDF_PATH)
 gripper = BulletGripper(bullet_client=bullet_client, robot_id=robot.robot_id)
 
-# robot commands 
+# robot commands
 # move the robot to the home position instantly, without real execution
 robot.home()
 
@@ -52,10 +52,8 @@ gripper.close()
 object_urdf_path = "/home/jovyan/workspace/assets/objects/cube/object.urdf"
 object_pose = Affine(translation=[0.5, 0, 0.1])
 object_id = bullet_client.loadURDF(
-    object_urdf_path,
-    object_pose.translation,
-    object_pose.quat,
-    flags=bullet_client.URDF_ENABLE_CACHED_GRAPHICS_SHAPES)
+    object_urdf_path, object_pose.translation, object_pose.quat, flags=bullet_client.URDF_ENABLE_CACHED_GRAPHICS_SHAPES
+)
 
 # simulate the scene for 100 steps and wait for the object to settle
 for _ in range(100):
@@ -66,6 +64,14 @@ for _ in range(100):
 position, quat = bullet_client.getBasePositionAndOrientation(object_id)
 object_pose = Affine(position, quat)
 print(object_pose)
+
+
+# AUFGABE:
+# Grip the cube with the gripper and move it to a new position
+
+
+robot.ptp(home_pose)
+
 
 # close the simulation
 bullet_client.disconnect()
