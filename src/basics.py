@@ -66,10 +66,6 @@ object_pose = Affine(position, quat)
 print(object_pose)
 
 
-# AUFGABE:
-# Grip the cube with the gripper and move it to a new position
-
-
 robot.ptp(home_pose)
 
 
