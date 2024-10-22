@@ -3,6 +3,8 @@ import pybullet as p
 import numpy as np
 from pybullet_utils.bullet_client import BulletClient
 
+import cv2
+
 from bullet_env.bullet_robot import BulletRobot, BulletGripper
 from transform import Affine
 
@@ -39,6 +41,39 @@ for _ in range(100):
 # keep in mind, that the object pose is defined in the world frame, and the eef points downwards
 # also, make sure that before grasping the gripper is open
 # consider adding a pre-grasp pose to ensure the object is grasped correctly without collision during approach
+
+# home robot
+robot.home()
+gripper.open()
+
+# get/update the current object pose (probabbly changed due to gravity)
+position, quat = bullet_client.getBasePositionAndOrientation(object_id)
+object_pose = Affine(position, quat)
+
+# define target/objet pose with vertical to world orientation and rotated around z-axis
+gripper_rotation = Affine(rotation=[0, np.pi, 0])
+grip_pose = object_pose * gripper_rotation
+
+# move 0.1 over cube
+overObj_pose = grip_pose * Affine(translation=[0, 0, -0.1])
+robot.ptp(overObj_pose)
+
+# move down to object
+robot.lin(grip_pose)
+
+# close gripper
+gripper.close()
+
+
+# move up
+robot.lin(overObj_pose)
+
+
+# pause/"hold" 
+random_noise = np.random.randint(0, 256, (480, 640, 3), dtype=np.uint8)
+cv2.imshow("random_noise", random_noise)
+cv2.waitKey(0)
+
 
 # close the simulation
 bullet_client.disconnect()
